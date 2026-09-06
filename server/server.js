@@ -14,7 +14,9 @@ const feedbackRoutes = require('./routes/feedbackRoutes');
 const app = express();
 const allowedOrigins = [
   'http://localhost:5173',
-  'http://localhost:5174'
+  'http://localhost:5174',
+  'https://wealthpulse-two.vercel.app',
+  'https://wealthpulse-7s3xbllp3-raman946-coders-projects.vercel.app'
 ];
 
 app.use(helmet());
