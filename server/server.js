@@ -12,25 +12,27 @@ const adminRoutes = require('./routes/adminRoutes');
 const feedbackRoutes = require('./routes/feedbackRoutes');
 
 const app = express();
+
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',
   'https://wealthpulse-two.vercel.app',
-  'https://wealthpulse-7s3xbllp3-raman946-coders-projects.vercel.app'
+  'https://wealthpulse-7s3xbllp3-raman946-coders-projects.vercel.app',
+  'https://wealthpulse-kf7y6iaup-raman946-coders-projects.vercel.app'
 ];
 
-app.use(helmet());
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: "cross-origin" }
+}));
+
 app.use(express.json());
 app.use(cookieParser());
+
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-      return;
-    }
-    callback(new Error('Not allowed by CORS'));
-  },
-  credentials: true
+  origin: allowedOrigins,
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
 const authLimiter = rateLimit({
