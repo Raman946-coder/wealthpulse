@@ -26,20 +26,21 @@ app.use(helmet({
 app.use(express.json());
 app.use(cookieParser());
 
+// Robust CORS strategy that matches all Vercel deployment preview URLs dynamically
 app.use(cors({
   origin: (origin, callback) => {
-    // Allow requests with no origin (like mobile apps or curl)
+    // Allow non-browser requests (Postman, curl, server-to-server)
     if (!origin) return callback(null, true);
 
-    // Allow local development URLs and main production domain
+    // Allow explicit local and production origins
     if (allowedOrigins.includes(origin)) return callback(null, true);
 
-    // Dynamic match for any Vercel deployment under your user account
-    if (/^https:\/\/wealthpulse-.*-raman946-coders-projects\.vercel\.app$/.test(origin)) {
+    // Match any Vercel domain associated with your deployments
+    if (/\.vercel\.app$/.test(origin)) {
       return callback(null, true);
     }
 
-    callback(new Error('Not allowed by CORS'));
+    callback(null, false);
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -56,6 +57,14 @@ app.use('/api/auth', authLimiter, authRoutes);
 app.use('/api/transactions', transactionRoutes);
 app.use('/api/admin', adminRoutes);
 app.use('/api/feedback', feedbackRoutes);
+
+// Global Error Handler
+app.use((err, req, res, next) => {
+  console.error('Unhandled Error:', err.stack);
+  res.status(err.status || 500).json({
+    message: err.message || 'Internal Server Error'
+  });
+});
 
 const PORT = process.env.PORT || 5000;
 
