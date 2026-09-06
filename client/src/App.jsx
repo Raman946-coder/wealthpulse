@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import API_URL from './utils/api';
 
 // Layout Components
 import Sidebar from './components/layout/Sidebar';
@@ -43,7 +44,7 @@ function AppContent() {
 
     const verifyUserSession = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/auth/me');
+        const response = await axios.get(`${API_URL}/api/auth/me`);
         if (isMounted && response.data?.user) {
           setUser(response.data.user);
           localStorage.setItem('wp_auth_user', JSON.stringify(response.data.user));
@@ -85,7 +86,7 @@ function AppContent() {
     clearLocalUserData();
     setUser(null);
 
-    axios.post('http://localhost:5000/api/auth/logout').catch(() => {});
+    axios.post(`${API_URL}/api/auth/logout`).catch(() => {});
 
     if (redirect) {
       navigate('/login');

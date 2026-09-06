@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_URL from '../utils/api';
 import { 
   Plus, 
   Search, 
@@ -50,7 +51,7 @@ export default function Transactions({ user }) {
 
   const fetchTransactions = async () => {
     try {
-      const response = await axios.get('http://localhost:5000/api/transactions', { withCredentials: true });
+      const response = await axios.get(`${API_URL}/api/transactions`, { withCredentials: true });
       const rawTransactions = Array.isArray(response.data) ? response.data : [];
       const normalized = rawTransactions.map((tx) => ({
         ...tx,
@@ -151,7 +152,7 @@ export default function Transactions({ user }) {
     };
 
     try {
-      const response = await axios.post('http://localhost:5000/api/transactions', payload, {
+      const response = await axios.post(`${API_URL}/api/transactions`, payload, {
         withCredentials: true
       });
 
@@ -185,7 +186,7 @@ export default function Transactions({ user }) {
     const transactionId = id;
 
     try {
-      await axios.delete(`http://localhost:5000/api/transactions/${transactionId}`, {
+      await axios.delete(`${API_URL}/api/transactions/${transactionId}`, {
         withCredentials: true
       });
     } catch (error) {

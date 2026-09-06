@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { ArrowRight, CheckCircle2, AlertCircle } from 'lucide-react';
+import API_URL from '../utils/api';
 
 export default function Onboarding({ user, onComplete }) {
   const [profile, setProfile] = useState({
@@ -25,7 +26,7 @@ export default function Onboarding({ user, onComplete }) {
     try {
       // Send payload matching keys expected by backend authRoutes.js
       const response = await axios.post(
-        'http://localhost:5000/api/auth/onboarding',
+        `${API_URL}/api/auth/onboarding`,
         {
           contactDetails: profile.contactDetails,
           financialGoals: profile.financialGoals,

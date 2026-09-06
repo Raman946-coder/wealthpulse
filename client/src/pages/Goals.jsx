@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import API_URL from '../utils/api';
 import { 
   Target, 
   Plus, 
@@ -136,7 +137,7 @@ export default function Goals({ user }) {
 
     try {
       await axios.post(
-        'http://localhost:5000/api/transactions',
+        `${API_URL}/api/transactions`,
         {
           description: title,
           amount,
@@ -169,13 +170,13 @@ export default function Goals({ user }) {
     localStorage.setItem(userTransactionsKey, JSON.stringify(remainingTransactions));
 
     try {
-      const response = await axios.get('http://localhost:5000/api/transactions', { withCredentials: true });
+      const response = await axios.get(`${API_URL}/api/transactions`, { withCredentials: true });
       const remoteTransactions = Array.isArray(response.data) ? response.data : [];
       const matchingRemoteTransactions = remoteTransactions.filter((tx) => shouldRemove(tx));
 
       await Promise.all(
         matchingRemoteTransactions.map((tx) =>
-          axios.delete(`http://localhost:5000/api/transactions/${tx._id || tx.id}`, {
+          axios.delete(`${API_URL}/api/transactions/${tx._id || tx.id}`, {
             withCredentials: true,
           })
         )

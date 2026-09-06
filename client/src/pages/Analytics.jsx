@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ArrowUpRight, ArrowDownRight, TrendingUp, Percent, PieChart, HelpCircle } from 'lucide-react';
+import API_URL from '../utils/api';
 
 export default function Analytics({ user }) {
   const userKey = user?._id || user?.id || user?.email || 'guest';
@@ -12,7 +13,7 @@ export default function Analytics({ user }) {
   useEffect(() => {
     const loadTransactions = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/api/transactions', {
+        const response = await axios.get(`${API_URL}/api/transactions`, {
           withCredentials: true
         });
         const data = Array.isArray(response.data) ? response.data : [];

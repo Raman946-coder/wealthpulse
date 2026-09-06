@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { UserPlus, Mail, Lock, User, AlertCircle, ArrowRight } from 'lucide-react';
+import API_URL from '../utils/api';
 
 export default function Register({ onLoginSuccess }) {
   const [form, setForm] = useState({
@@ -19,7 +20,7 @@ export default function Register({ onLoginSuccess }) {
 
     try {
       const response = await axios.post(
-        'http://localhost:5000/api/auth/register',
+        `${API_URL}/api/auth/register`,
         form,
         { withCredentials: true }
       );

@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Activity, AlertCircle, BarChart3, CheckCircle2, Shield, Trash2, Users } from 'lucide-react';
+import API_URL from '../utils/api';
 
-const API_URL = 'http://localhost:5000/api/admin';
+const ADMIN_API_URL = `${API_URL}/api/admin`;
 
 const formatPercent = (value) => `${Math.round((value || 0) * 100)}%`;
 const formatMonth = (value) => {
@@ -32,7 +33,7 @@ export default function Admin() {
 
   const loadOverview = async () => {
     try {
-      const response = await axios.get(`${API_URL}/overview`, { withCredentials: true });
+      const response = await axios.get(`${ADMIN_API_URL}/overview`, { withCredentials: true });
       setData(response.data);
       setError('');
     } catch (requestError) {
@@ -45,18 +46,18 @@ export default function Admin() {
   useEffect(() => { loadOverview(); }, []);
 
   const updateRole = async (id, role) => {
-    await axios.patch(`${API_URL}/users/${id}`, { role }, { withCredentials: true });
+    await axios.patch(`${ADMIN_API_URL}/users/${id}`, { role }, { withCredentials: true });
     loadOverview();
   };
 
   const deleteUser = async (id) => {
     if (!window.confirm('Delete this user and their associated data?')) return;
-    await axios.delete(`${API_URL}/users/${id}`, { withCredentials: true });
+    await axios.delete(`${ADMIN_API_URL}/users/${id}`, { withCredentials: true });
     loadOverview();
   };
 
   const updateFeedback = async (id, status) => {
-    await axios.patch(`${API_URL}/feedback/${id}`, { status }, { withCredentials: true });
+    await axios.patch(`${ADMIN_API_URL}/feedback/${id}`, { status }, { withCredentials: true });
     loadOverview();
   };
 

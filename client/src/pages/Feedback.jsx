@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { CheckCircle2, MessageSquare, Send } from 'lucide-react';
+import API_URL from '../utils/api';
 
-const API_URL = 'http://localhost:5000/api/feedback';
+const FEEDBACK_API_URL = `${API_URL}/api/feedback`;
 
 const statusStyles = {
   open: 'bg-amber-400/10 text-amber-300 border-amber-400/20',
@@ -21,7 +22,7 @@ export default function Feedback() {
 
   const loadFeedback = async () => {
     try {
-      const response = await axios.get(API_URL, { withCredentials: true });
+      const response = await axios.get(FEEDBACK_API_URL, { withCredentials: true });
       setItems(response.data);
     } catch (error) {
       setNotice({ type: 'error', text: error.response?.data?.message || 'Unable to load feedback.' });
@@ -37,7 +38,7 @@ export default function Feedback() {
     setSubmitting(true);
     setNotice({ type: '', text: '' });
     try {
-      await axios.post(API_URL, form, { withCredentials: true });
+      await axios.post(FEEDBACK_API_URL, form, { withCredentials: true });
       setForm({ subject: '', message: '' });
       setNotice({ type: 'success', text: 'Your feedback has been sent to the WealthPulse team.' });
       await loadFeedback();
