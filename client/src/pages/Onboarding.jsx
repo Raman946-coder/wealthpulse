@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { ArrowRight, CheckCircle2, AlertCircle } from 'lucide-react';
-import API_URL from '../utils/api';
+import api from '../utils/api';
 
 export default function Onboarding({ user, onComplete }) {
   const [profile, setProfile] = useState({
@@ -24,18 +23,22 @@ export default function Onboarding({ user, onComplete }) {
     setError('');
 
     try {
-      // Send payload matching keys expected by backend authRoutes.js
-      const response = await axios.post(
-        `${API_URL}/api/auth/onboarding`,
+      const storedAuth = JSON.parse(localStorage.getItem('wp_auth_user') || '{}');
+      const token = storedAuth.token || localStorage.getItem('token');
+
+      const response = await api.post(
+        '/api/auth/onboarding',
         {
           contactDetails: profile.contactDetails,
           financialGoals: profile.financialGoals,
           financialActivityHistory: profile.financialActivityHistory,
         },
-        { withCredentials: true }
+        {
+          headers: token ? { Authorization: `Bearer ${token}` } : {},
+          withCredentials: true,
+        }
       );
 
-      // Create updated user object with isProfileComplete set to true
       const updatedUser = {
         ...user,
         isProfileComplete: true,
@@ -46,16 +49,12 @@ export default function Onboarding({ user, onComplete }) {
         },
       };
 
-      // Sync updated user data with local state and localStorage
       localStorage.setItem('wp_auth_user', JSON.stringify(updatedUser));
-      
       setSubmitted(true);
 
-      // Trigger parent handler to update React state in App.jsx
       setTimeout(() => {
         if (onComplete) onComplete(updatedUser);
       }, 1000);
-
     } catch (err) {
       console.error('Onboarding submission error:', err);
       setError(

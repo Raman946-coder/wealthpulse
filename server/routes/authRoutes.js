@@ -19,10 +19,12 @@ const sendTokenCookie = (user, res, statusCode, message) => {
     { expiresIn: '1d' }
   );
 
+  const isProduction = process.env.NODE_ENV === 'production';
+
   const cookieOptions = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax', // 'none' is required for cross-site Vercel -> Render requests
     maxAge: 24 * 60 * 60 * 1000,
   };
 
@@ -55,7 +57,6 @@ router.post('/register', authLimiter, async (req, res) => {
       return res.status(400).json({ message: 'Email address is already registered.' });
     }
 
-    // Hash password before creating user
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
 
@@ -88,7 +89,6 @@ router.post('/login', authLimiter, async (req, res) => {
       return res.status(401).json({ message: 'Invalid email or password.' });
     }
 
-    // Direct bcrypt comparison without calling missing schema method
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return res.status(401).json({ message: 'Invalid email or password.' });
@@ -162,10 +162,11 @@ router.get('/me', auth, async (req, res) => {
 });
 
 router.post('/logout', (req, res) => {
+  const isProduction = process.env.NODE_ENV === 'production';
   res.clearCookie('jwt_token', {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'lax',
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
   });
   res.json({ message: 'Logged out successfully.' });
 });
