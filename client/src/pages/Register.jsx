@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { UserPlus, Mail, Lock, User, AlertCircle, ArrowRight } from 'lucide-react';
-import API_URL from '../utils/api';
+import api from '../utils/api';
 
 export default function Register({ onLoginSuccess }) {
   const [form, setForm] = useState({
@@ -19,17 +18,23 @@ export default function Register({ onLoginSuccess }) {
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        `${API_URL}/api/auth/register`,
-        form,
-        { withCredentials: true }
-      );
+      // Send request using the pre-configured Axios instance
+      const response = await api.post('/api/auth/register', form);
 
       const userData = response.data.user || response.data;
+      const token = response.data.token;
+
+      // Store token and user details locally for authentication persistence
+      if (token) {
+        localStorage.setItem('token', token);
+      }
+      localStorage.setItem('wp_auth_user', JSON.stringify(userData));
+
       if (onLoginSuccess) {
         onLoginSuccess(userData);
       }
     } catch (err) {
+      console.error('Registration error:', err);
       setError(err.response?.data?.message || 'Registration failed. Please try again.');
     } finally {
       setLoading(false);

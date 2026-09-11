@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
-import axios from 'axios';
 import { User, Shield, Lock, Mail, AlertCircle, ArrowRight } from 'lucide-react';
-import API_URL from '../utils/api';
+import api from '../utils/api';
 
 export default function Login({ onLoginSuccess, onLogin }) {
   const [role, setRole] = useState('user');
@@ -16,20 +15,29 @@ export default function Login({ onLoginSuccess, onLogin }) {
     setLoading(true);
 
     try {
-      const response = await axios.post(
-        `${API_URL}/api/auth/login`,
-        { email, password, role },
-        { withCredentials: true }
-      );
+      // Use configured Axios instance with relative endpoint
+      const response = await api.post('/api/auth/login', {
+        email,
+        password,
+        role,
+      });
 
-      // Extract user object from backend response
-      const userData = response.data.user;
+      // Extract user object and token from backend response
+      const userData = response.data.user || response.data;
+      const token = response.data.token;
+
+      // Store token and user details for session persistence
+      if (token) {
+        localStorage.setItem('token', token);
+      }
+      localStorage.setItem('wp_auth_user', JSON.stringify(userData));
+
       const callback = onLoginSuccess || onLogin;
-
       if (callback) {
         callback(userData);
       }
     } catch (err) {
+      console.error('Login error:', err);
       setError(
         err.response?.data?.message || 'Authentication failed. Please check your credentials.'
       );
