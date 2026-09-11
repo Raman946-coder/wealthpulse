@@ -19,28 +19,31 @@ const allowedOrigins = [
   'https://wealthpulse-two.vercel.app'
 ];
 
-// 1. Dynamic CORS Strategy (Defined BEFORE Helmet and body parsers)
-const corsOptions = {
-  origin: (origin, callback) => {
-    if (!origin) return callback(null, true);
-    if (allowedOrigins.includes(origin)) return callback(null, true);
-    if (/\.vercel\.app$/.test(origin)) return callback(null, true);
+// 1. Explicit Manual CORS Middleware (Fixes preflight and credential restrictions)
+app.use((req, res, next) => {
+  const origin = req.headers.origin;
+  if (allowedOrigins.includes(origin) || (origin && /\.vercel\.app$/.test(origin))) {
+    res.setHeader('Access-Control-Allow-Origin', origin);
+  }
+  res.setHeader('Access-Control-Allow-Credentials', 'true');
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
 
-    return callback(new Error('Not allowed by CORS'), false);
-  },
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  optionsSuccessStatus: 200 // Ensures legacy browsers return 200 for OPTIONS preflight
-};
+  // Intercept preflight OPTIONS request immediately
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
 
-// Apply CORS middleware
-app.use(cors(corsOptions));
+  next();
+});
 
-// Explicitly handle Preflight OPTIONS requests for all endpoints
-app.options('*', cors(corsOptions));
+// 2. Standard CORS package fallback
+app.use(cors({
+  origin: allowedOrigins,
+  credentials: true
+}));
 
-// 2. Security Headers (Configured so Helmet doesn't block cross-origin requests/credentials)
+// 3. Security Headers (Configured for cross-origin authentication)
 app.use(
   helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" },
@@ -92,7 +95,6 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/wealthpulse
     console.log('MongoDB Connected');
     const server = app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
 
-    // Graceful Shutdown
     const shutdown = async () => {
       console.log('Shutting down server...');
       server.close(async () => {
