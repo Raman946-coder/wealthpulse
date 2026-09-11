@@ -19,18 +19,8 @@ const allowedOrigins = [
   'https://wealthpulse-two.vercel.app'
 ];
 
-// Security Headers
-app.use(helmet({
-  crossOriginResourcePolicy: { policy: "cross-origin" }
-}));
-
-// Parsers
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
-
-// Dynamic CORS Strategy
-app.use(cors({
+// 1. Dynamic CORS Strategy (Defined BEFORE Helmet and body parsers)
+const corsOptions = {
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
     if (allowedOrigins.includes(origin)) return callback(null, true);
@@ -40,8 +30,28 @@ app.use(cors({
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
-}));
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  optionsSuccessStatus: 200 // Ensures legacy browsers return 200 for OPTIONS preflight
+};
+
+// Apply CORS middleware
+app.use(cors(corsOptions));
+
+// Explicitly handle Preflight OPTIONS requests for all endpoints
+app.options('*', cors(corsOptions));
+
+// 2. Security Headers (Configured so Helmet doesn't block cross-origin requests/credentials)
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+    crossOriginOpenerPolicy: { policy: "unsafe-none" }
+  })
+);
+
+// Parsers
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // Rate Limiters
 const authLimiter = rateLimit({
