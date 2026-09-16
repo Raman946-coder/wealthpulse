@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const isLocalDev = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
-const defaultApiUrl = isLocalDev ? 'http://localhost:5000' : 'https://wealthpulse.onrender.com';
+const defaultApiUrl = isLocalDev ? 'http://localhost:5000' : 'https://wealthpulse-zkk5.onrender.com';
 
 export const API_URL = import.meta.env.VITE_API_URL || defaultApiUrl;
 
