@@ -19,20 +19,21 @@ const allowedOrigins = [
   'https://wealthpulse-sage.vercel.app'
 ];
 
-// 1. Explicit Manual CORS Middleware (Evaluated before any other middleware or routes)
 app.use((req, res, next) => {
   const origin = req.headers.origin;
+  const isAllowedOrigin = !!origin && (
+    allowedOrigins.includes(origin) || /\.vercel\.app$/.test(origin)
+  );
 
-  // Echo exact origin back if it matches allowedOrigins array or any Vercel deployment domain
-  if (allowedOrigins.includes(origin) || (origin && /\.vercel\.app$/.test(origin))) {
+  if (isAllowedOrigin) {
     res.setHeader('Access-Control-Allow-Origin', origin);
+    res.setHeader('Vary', 'Origin');
   }
 
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
 
-  // Answer preflight OPTIONS requests immediately
   if (req.method === 'OPTIONS') {
     return res.sendStatus(200);
   }
@@ -40,7 +41,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// 2. Standard CORS Package Configuration
 app.use(cors({
   origin: (origin, callback) => {
     if (!origin) return callback(null, true);
@@ -49,7 +49,9 @@ app.use(cors({
     }
     return callback(new Error('Not allowed by CORS'), false);
   },
-  credentials: true
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
 }));
 
 // 3. Security Headers
