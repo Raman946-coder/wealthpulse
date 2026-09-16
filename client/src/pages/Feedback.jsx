@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { CheckCircle2, MessageSquare, Send } from 'lucide-react';
-import API_URL from '../utils/api';
+import { API_URL } from '../utils/api';
 
 const FEEDBACK_API_URL = `${API_URL}/api/feedback`;
 

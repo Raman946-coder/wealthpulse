@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ArrowUpRight, ArrowDownRight, Wallet, PiggyBank, FileText, BellRing, Sparkles } from 'lucide-react';
 import { formatCurrency, getMonthlySpendingReport } from '../utils/finance';
-import API_URL from '../utils/api';
+import { API_URL } from '../utils/api';
 
 export default function Dashboard({ user }) {
   const userKey = user?._id || user?.id || user?.email || 'guest';

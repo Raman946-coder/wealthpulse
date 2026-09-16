@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Activity, AlertCircle, BarChart3, CheckCircle2, Shield, Trash2, Users } from 'lucide-react';
-import API_URL from '../utils/api';
+import { API_URL } from '../utils/api';
 
 const ADMIN_API_URL = `${API_URL}/api/admin`;
 

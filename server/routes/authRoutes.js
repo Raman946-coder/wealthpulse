@@ -24,11 +24,12 @@ const sendTokenCookie = (user, res, statusCode, message) => {
   const cookieOptions = {
     httpOnly: true,
     secure: isProduction,
-    sameSite: isProduction ? 'none' : 'lax', // 'none' is required for cross-site Vercel -> Render requests
+    sameSite: isProduction ? 'none' : 'lax',
     maxAge: 24 * 60 * 60 * 1000,
   };
 
   res.cookie('jwt_token', token, cookieOptions);
+  res.cookie('token', token, cookieOptions);
 
   res.status(statusCode).json({
     message,
@@ -164,6 +165,11 @@ router.get('/me', auth, async (req, res) => {
 router.post('/logout', (req, res) => {
   const isProduction = process.env.NODE_ENV === 'production';
   res.clearCookie('jwt_token', {
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
+  });
+  res.clearCookie('token', {
     httpOnly: true,
     secure: isProduction,
     sameSite: isProduction ? 'none' : 'lax',

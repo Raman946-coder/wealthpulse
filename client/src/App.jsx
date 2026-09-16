@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import API_URL from './utils/api';
+import { API_URL } from './utils/api';
 
 // Layout Components
 import Sidebar from './components/layout/Sidebar';

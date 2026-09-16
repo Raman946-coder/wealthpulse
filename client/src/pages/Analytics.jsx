@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ArrowUpRight, ArrowDownRight, TrendingUp, Percent, PieChart, HelpCircle } from 'lucide-react';
-import API_URL from '../utils/api';
+import { API_URL } from '../utils/api';
 
 export default function Analytics({ user }) {
   const userKey = user?._id || user?.id || user?.email || 'guest';
