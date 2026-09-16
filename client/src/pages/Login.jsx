@@ -146,12 +146,14 @@ export default function Login({ onLoginSuccess, onLogin }) {
         </form>
 
         {/* Sign Up Link */}
-        <div className="mt-6 text-center text-xs text-slate-400">
-          Don't have an account?{' '}
-          <a href="/register" className="text-emerald-400 hover:text-emerald-300 font-semibold underline underline-offset-4 ml-1">
-            Sign Up
-          </a>
-        </div>
+        {role !== 'admin' && (
+          <div className="mt-6 text-center text-xs text-slate-400">
+            Don't have an account?{' '}
+            <a href="/register" className="text-emerald-400 hover:text-emerald-300 font-semibold underline underline-offset-4 ml-1">
+              Sign Up
+            </a>
+          </div>
+        )}
 
       </div>
     </div>

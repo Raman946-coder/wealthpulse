@@ -2,10 +2,19 @@ import React, { useMemo, useState, useEffect } from 'react';
 import { TrendingUp, ShieldCheck, Wallet, BriefcaseBusiness, Plus, ArrowUpRight, ArrowDownRight } from 'lucide-react';
 import { formatCurrency } from '../utils/finance';
 
-const defaultAssets = [
-  { id: '1', name: 'Mutual Fund', type: 'Investment', value: 120000, growth: 8.4 },
-  { id: '2', name: 'Emergency Fund', type: 'Cash', value: 45000, growth: 2.1 },
-  { id: '3', name: 'Stocks', type: 'Investment', value: 98000, growth: 12.8 },
+const investmentOptions = [
+  'Stocks',
+  'Mutual Fund',
+  'Gold',
+  'Fixed Deposit',
+  'Real Estate',
+  'Crypto',
+  'ETF',
+  'Bonds',
+  'Savings',
+  'Retirement',
+  'Business',
+  'Other',
 ];
 
 export default function Investments({ user }) {
@@ -16,10 +25,10 @@ export default function Investments({ user }) {
       try {
         return JSON.parse(saved);
       } catch (e) {
-        return defaultAssets;
+        return [];
       }
     }
-    return defaultAssets;
+    return [];
   });
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ name: '', type: 'Investment', value: '', growth: '' });
@@ -97,24 +106,31 @@ export default function Investments({ user }) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        {assets.map((asset) => (
-          <div key={asset.id} className="bg-slate-800/80 border border-slate-700 rounded-2xl p-5 shadow-lg">
-            <div className="flex items-center justify-between">
-              <div>
-                <div className="text-xs uppercase tracking-[0.2em] text-slate-400">{asset.type}</div>
-                <h3 className="text-xl font-bold text-white mt-2">{asset.name}</h3>
+      {assets.length === 0 ? (
+        <div className="rounded-2xl border border-dashed border-slate-700 bg-slate-800/40 p-8 text-center text-slate-400">
+          <p className="text-lg font-semibold text-white">No investments added yet</p>
+          <p className="mt-2 text-sm">Add your own investment choices such as stocks, mutual funds, gold, real estate, or crypto.</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+          {assets.map((asset) => (
+            <div key={asset.id} className="bg-slate-800/80 border border-slate-700 rounded-2xl p-5 shadow-lg">
+              <div className="flex items-center justify-between">
+                <div>
+                  <div className="text-xs uppercase tracking-[0.2em] text-slate-400">{asset.type}</div>
+                  <h3 className="text-xl font-bold text-white mt-2">{asset.name}</h3>
+                </div>
+                <div className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs font-semibold ${Number(asset.growth) >= 0 ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'}`}>
+                  {Number(asset.growth) >= 0 ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
+                  {Number(asset.growth).toFixed(1)}%
+                </div>
               </div>
-              <div className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs font-semibold ${Number(asset.growth) >= 0 ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'}`}>
-                {Number(asset.growth) >= 0 ? <ArrowUpRight className="w-4 h-4" /> : <ArrowDownRight className="w-4 h-4" />}
-                {Number(asset.growth).toFixed(1)}%
-              </div>
+              <div className="mt-6 text-2xl font-bold text-white">{formatCurrency(asset.value)}</div>
+              <div className="mt-4 text-xs text-slate-400">Performance snapshot for this asset.</div>
             </div>
-            <div className="mt-6 text-2xl font-bold text-white">{formatCurrency(asset.value)}</div>
-            <div className="mt-4 text-xs text-slate-400">Performance snapshot for this asset.</div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
       {showForm && (
         <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center z-50 p-4">
@@ -125,8 +141,20 @@ export default function Investments({ user }) {
             </div>
             <form onSubmit={addAsset} className="space-y-4">
               <div>
-                <label className="block text-xs font-medium text-slate-300 mb-1">Asset Name</label>
-                <input value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white" placeholder="e.g. Gold, SIP, Real Estate" required />
+                <label className="block text-xs font-medium text-slate-300 mb-1">Investment Name</label>
+                <input
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  className="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white"
+                  placeholder="e.g. Gold, SIP, Real Estate"
+                  list="investment-options"
+                  required
+                />
+                <datalist id="investment-options">
+                  {investmentOptions.map((option) => (
+                    <option key={option} value={option} />
+                  ))}
+                </datalist>
               </div>
               <div>
                 <label className="block text-xs font-medium text-slate-300 mb-1">Type</label>
