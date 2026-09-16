@@ -16,20 +16,23 @@ const app = express();
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',
-  'https://wealthpulse-two.vercel.app'
+  'https://wealthpulse-sage.vercel.app'
 ];
 
-// 1. Explicit Manual CORS Middleware (Fixes preflight and credential restrictions)
+// 1. Explicit Manual CORS Middleware (Evaluated before any other middleware or routes)
 app.use((req, res, next) => {
   const origin = req.headers.origin;
+
+  // Echo exact origin back if it matches allowedOrigins array or any Vercel deployment domain
   if (allowedOrigins.includes(origin) || (origin && /\.vercel\.app$/.test(origin))) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   }
+
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization, X-Requested-With');
 
-  // Intercept preflight OPTIONS request immediately
+  // Answer preflight OPTIONS requests immediately
   if (req.method === 'OPTIONS') {
     return res.sendStatus(200);
   }
@@ -37,13 +40,19 @@ app.use((req, res, next) => {
   next();
 });
 
-// 2. Standard CORS package fallback
+// 2. Standard CORS Package Configuration
 app.use(cors({
-  origin: allowedOrigins,
+  origin: (origin, callback) => {
+    if (!origin) return callback(null, true);
+    if (allowedOrigins.includes(origin) || /\.vercel\.app$/.test(origin)) {
+      return callback(null, true);
+    }
+    return callback(new Error('Not allowed by CORS'), false);
+  },
   credentials: true
 }));
 
-// 3. Security Headers (Configured for cross-origin authentication)
+// 3. Security Headers
 app.use(
   helmet({
     crossOriginResourcePolicy: { policy: "cross-origin" },
