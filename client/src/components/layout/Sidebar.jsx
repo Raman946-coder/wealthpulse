@@ -27,7 +27,7 @@ export default function Sidebar({ user, onLogout, isMobileMenuOpen, onMobileMenu
         type="button"
         aria-label="Open navigation menu"
         onClick={onMobileMenuToggle}
-        className="md:hidden fixed top-4 left-4 z-50 inline-flex items-center justify-center rounded-xl border border-emerald-400/30 bg-slate-900/90 p-2.5 text-emerald-300 shadow-lg backdrop-blur-sm"
+        className="md:hidden fixed top-4 right-4 z-50 inline-flex items-center justify-center rounded-xl border border-emerald-400/30 bg-slate-900/90 p-2.5 text-emerald-300 shadow-lg backdrop-blur-sm"
       >
         {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
       </button>

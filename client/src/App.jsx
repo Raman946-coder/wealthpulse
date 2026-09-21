@@ -150,7 +150,7 @@ function AppContent() {
             onMobileMenuToggle={() => setIsMobileSidebarOpen((prev) => !prev)}
           />
 
-          <main className="flex-1 p-3 sm:p-4 md:p-8 overflow-y-auto min-h-screen w-full">
+          <main className="flex-1 p-3 pt-16 sm:p-4 md:p-8 overflow-y-auto min-h-screen w-full">
             <div className="mx-auto max-w-7xl w-full">
               <Routes>
                 <Route 
