@@ -11,7 +11,6 @@ export default function Dashboard({ user }) {
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Extract financial profile directly from backend user object or local state
   const financialProfile = user?.financialProfile || {};
   
   const contactInfo = financialProfile.contactDetails || financialProfile.contact || 'Not set';

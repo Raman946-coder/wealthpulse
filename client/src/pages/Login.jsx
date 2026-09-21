@@ -15,18 +15,15 @@ export default function Login({ onLoginSuccess, onLogin }) {
     setLoading(true);
 
     try {
-      // Use configured Axios instance with relative endpoint
       const response = await api.post('/api/auth/login', {
         email,
         password,
         role,
       });
 
-      // Extract user object and token from backend response
       const userData = response.data.user || response.data;
       const token = response.data.token;
 
-      // Store token and user details for session persistence
       if (token) {
         localStorage.setItem('token', token);
       }

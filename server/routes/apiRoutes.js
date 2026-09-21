@@ -5,7 +5,6 @@ const Transaction = require('../models/Transaction');
 const Habit = require('../models/Habit');
 const Goal = require('../models/Goal');
 
-// Basic Seed Endpoint to insert realistic sample data
 router.get('/seed', async (req, res) => {
   try {
     await User.deleteMany({});

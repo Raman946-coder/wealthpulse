@@ -27,7 +27,6 @@ export default function Goals({ user }) {
     return [];
   });
 
-  // Modal States
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isDepositModalOpen, setIsDepositModalOpen] = useState(false);
   const [selectedGoal, setSelectedGoal] = useState(null);
@@ -42,7 +41,6 @@ export default function Goals({ user }) {
     deadline: ''
   });
 
-  // Save to localStorage
   useEffect(() => {
     localStorage.setItem(goalsStorageKey, JSON.stringify(goals));
   }, [goals, goalsStorageKey]);
@@ -186,7 +184,6 @@ export default function Goals({ user }) {
     }
   };
 
-  // Handle Create Goal
   const handleAddGoal = (e) => {
     e.preventDefault();
 
@@ -235,7 +232,6 @@ export default function Goals({ user }) {
     setIsAddModalOpen(false);
   };
 
-  // Handle Deposit / Contribution
   const handleDeposit = async (e) => {
     e.preventDefault();
     const amount = parseFloat(depositAmount);
@@ -277,7 +273,6 @@ export default function Goals({ user }) {
     setDepositAmount('');
   };
 
-  // Handle Delete Goal
   const handleDeleteGoal = async (id) => {
     const goalToDelete = goals.find((g) => g.id === id);
     if (!goalToDelete) return;
@@ -297,7 +292,6 @@ export default function Goals({ user }) {
     window.dispatchEvent(new CustomEvent('wealthpulse:transactions-updated'));
   };
 
-  // Aggregate Metrics
   const totalTarget = goals.reduce((acc, g) => acc + g.targetAmount, 0);
   const totalSaved = goals.reduce((acc, g) => acc + g.currentAmount, 0);
   const overallProgress = totalTarget === 0 ? 0 : Math.min(100, Math.round((totalSaved / totalTarget) * 100));

@@ -18,13 +18,11 @@ export default function Register({ onLoginSuccess }) {
     setLoading(true);
 
     try {
-      // Send request using the pre-configured Axios instance
       const response = await api.post('/api/auth/register', form);
 
       const userData = response.data.user || response.data;
       const token = response.data.token;
 
-      // Store token and user details locally for authentication persistence
       if (token) {
         localStorage.setItem('token', token);
       }

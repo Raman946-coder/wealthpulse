@@ -8,7 +8,7 @@ export default function Analytics({ user }) {
   const storageKey = `wp_transactions_${userKey}`;
 
   const [transactions, setTransactions] = useState([]);
-  const [viewMode, setViewMode] = useState('outflow'); // 'outflow' | 'income'
+  const [viewMode, setViewMode] = useState('outflow');
 
   useEffect(() => {
     const loadTransactions = async () => {
@@ -57,11 +57,9 @@ export default function Analytics({ user }) {
   const totalOutflow = totalExpenses + totalSavingsDeposits;
   const netRetained = totalIncome - totalOutflow;
 
-  // Savings rate calculation
   const savingsRate = totalIncome > 0 ? Math.round((totalSavingsDeposits / totalIncome) * 100) : 0;
   const trueSavingsRate = totalIncome > 0 ? ((netRetained + totalSavingsDeposits) / totalIncome) * 100 : 0;
 
-  // Category Aggregations
   const categoryMap = safeTx
     .filter((t) => t && t.type === 'expense')
     .reduce((acc, t) => {

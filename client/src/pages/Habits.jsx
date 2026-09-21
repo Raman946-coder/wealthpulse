@@ -53,7 +53,6 @@ const CORE_FINANCIAL_HABITS = [
 ];
 
 export default function Habits({ user }) {
-  // Isolate localStorage key per logged-in user
   const userStorageKey = `wp_financial_habits_${user?._id || user?.id || user?.email || 'guest'}`;
   const todayKey = new Date().toISOString().split('T')[0];
 
@@ -78,7 +77,6 @@ export default function Habits({ user }) {
   const [newDesc, setNewDesc] = useState('');
   const [newCategory, setNewCategory] = useState('Budgeting');
 
-  // Sync to localStorage whenever user habits change
   useEffect(() => {
     localStorage.setItem(userStorageKey, JSON.stringify(habits));
   }, [habits, userStorageKey]);
@@ -140,7 +138,6 @@ export default function Habits({ user }) {
     }
   };
 
-  // Analytics Metrics
   const completedCount = habits.filter((h) => h.completedToday).length;
   const totalCount = habits.length;
   const completionPercentage = totalCount ? Math.round((completedCount / totalCount) * 100) : 0;

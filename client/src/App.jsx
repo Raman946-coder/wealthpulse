@@ -3,10 +3,8 @@ import { BrowserRouter as Router, Routes, Route, Navigate, useNavigate } from 'r
 import axios from 'axios';
 import { API_URL } from './utils/api';
 
-// Layout Components
 import Sidebar from './components/layout/Sidebar';
 
-// Page Components
 import Dashboard from './pages/Dashboard';
 import Transactions from './pages/Transactions';
 import Habits from './pages/Habits';
@@ -20,7 +18,6 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Feedback from './pages/Feedback';
 
-// Global Axios configuration
 axios.defaults.withCredentials = true;
 
 function AppContent() {
@@ -110,12 +107,10 @@ function AppContent() {
     localStorage.setItem('wp_auth_user', JSON.stringify(safeUser));
     setUser(safeUser);
 
-    // Check database field isProfileComplete directly
     navigate(safeUser.isProfileComplete ? '/dashboard' : '/onboarding');
   };
 
   const handleOnboardingComplete = (updatedUserData) => {
-    // If Onboarding passes back an updated user, sync state and localStorage
     const safeUser = updatedUserData || { ...user, isProfileComplete: true };
     localStorage.setItem('wp_auth_user', JSON.stringify(safeUser));
     setUser(safeUser);
