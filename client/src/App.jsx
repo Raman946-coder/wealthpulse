@@ -37,7 +37,19 @@ function AppContent() {
   });
 
   const [loading, setLoading] = useState(true);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const closeSidebarOnDesktop = () => {
+      if (window.innerWidth >= 768) {
+        setIsMobileSidebarOpen(false);
+      }
+    };
+
+    window.addEventListener('resize', closeSidebarOnDesktop);
+    return () => window.removeEventListener('resize', closeSidebarOnDesktop);
+  }, []);
 
   useEffect(() => {
     let isMounted = true;
@@ -127,10 +139,24 @@ function AppContent() {
     <div className="premium-shell min-h-screen text-slate-100 flex flex-col md:flex-row">
       {user ? (
         <>
-          <Sidebar user={user} onLogout={handleLogout} />
+          {isMobileSidebarOpen && (
+            <button
+              type="button"
+              aria-label="Close navigation menu"
+              onClick={() => setIsMobileSidebarOpen(false)}
+              className="fixed inset-0 z-30 bg-slate-950/70 md:hidden"
+            />
+          )}
 
-          <main className="flex-1 p-4 md:p-8 overflow-y-auto min-h-screen">
-            <div className="mx-auto max-w-7xl">
+          <Sidebar
+            user={user}
+            onLogout={handleLogout}
+            isMobileMenuOpen={isMobileSidebarOpen}
+            onMobileMenuToggle={() => setIsMobileSidebarOpen((prev) => !prev)}
+          />
+
+          <main className="flex-1 p-3 sm:p-4 md:p-8 overflow-y-auto min-h-screen w-full">
+            <div className="mx-auto max-w-7xl w-full">
               <Routes>
                 <Route 
                   path="/onboarding" 
