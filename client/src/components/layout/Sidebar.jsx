@@ -34,8 +34,8 @@ export default function Sidebar({ user, onLogout, isMobileMenuOpen, onMobileMenu
 
       <aside
         className={`w-[85vw] max-w-[320px] md:w-72 premium-panel border-b md:border-b-0 md:border-r md:h-screen sticky top-0 flex flex-col justify-between p-4 flex-shrink-0 z-40 transition-transform duration-300 ease-out
-          ${isMobileMenuOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
-          fixed inset-y-0 left-0 md:static`}
+          ${isMobileMenuOpen ? 'fixed inset-y-0 left-0 translate-x-0' : 'hidden'}
+          md:static md:flex md:translate-x-0 md:inset-auto md:left-auto md:top-auto`}
       >
         <div className="flex-1 overflow-y-auto">
           <div className="flex items-center justify-between gap-3 px-2 mb-8 mt-2 md:justify-start">
